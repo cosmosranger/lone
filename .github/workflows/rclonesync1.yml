@@ -1,0 +1,36 @@
+name: Rclone Copy Flow 1
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  push:
+    paths:
+      - 'Flow/Rclone1.txt'    
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Checkout
+         uses: actions/checkout@main          
+       - name: Initialization
+         continue-on-error: true
+         run: |
+           git config --global user.name ${{ secrets.GH_NAME }}
+           git config --global user.email ${{ secrets.GH_MAIL }}
+           git config --global credential.helper store
+           echo "https://cosmosranger:${{ secrets.github.token }}@github.com" > ~/.git-credentials  
+       - uses: styfle/cancel-workflow-action@0.9.0
+         name: "Cancel duplicate workflow runs"
+         with:
+            all_but_latest: true
+            access_token: ${{ secrets.GH_TOKEN }}
+       - name: Deploying and Running rclone
+         timeout-minutes: 240
+         continue-on-error: true
+         uses: wei/rclone@master
+         env:
+           RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
+         with:
+           args: copy "" "" --transfers 5 --checkers 5 --stats=10m -vP --stats=15m --ignore-existing --drive-chunk-size 128M --drive-acknowledge-abuse --drive-stop-on-upload-limit
