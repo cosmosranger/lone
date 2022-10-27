@@ -33,4 +33,4 @@ jobs:
          env:
            RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
          with:
-           args: copy "paid:Super" "npo-paid-clone:Super-Clone" --transfers 5 --checkers 5 --stats=10m -vP --stats=15m --ignore-existing --drive-chunk-size 128M --drive-acknowledge-abuse --drive-stop-on-upload-limit
+           args: copy "paid:Super" "npo-paid-clone:Super-Clone" --transfers 5 --checkers 5 --stats=10m --stats=15m --ignore-existing --drive-chunk-size 128M --drive-acknowledge-abuse --drive-stop-on-upload-limit
